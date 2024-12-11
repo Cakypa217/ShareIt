@@ -1,4 +1,4 @@
-package ru.practicum.item;
+package ru.practicum.item.model;
 
 import lombok.Data;
 
@@ -6,6 +6,7 @@ import lombok.Data;
 public class Item {
     private long id;
     private long userId;
-    private String url;
+    private String name;
     private String description;
+    private Boolean available;
 }
