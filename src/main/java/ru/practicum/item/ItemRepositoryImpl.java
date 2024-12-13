@@ -43,35 +43,34 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Item save(Item item, long userId) {
+    public Item save(Item item) {
+        final Long userId = item.getUserId();
         if (userServiceImp.getUser(userId) == null) {
             throw new UserNotFoundException(userId);
         }
-        Item itemm = item;
-        item.setId(idGenerator.incrementAndGet());
-        item.setUserId(userId);
-        item.setAvailable(item.getAvailable());
-        items.add(item);
-        return itemm;
+        Item newItem = item;
+        newItem.setId(idGenerator.incrementAndGet());
+        items.add(newItem);
+        return newItem;
     }
 
     @Override
-    public Item updateItem(long itemId, Item item, long userId) {
-        Item item1 = items.stream()
-                .filter(i -> i.getId() == itemId && i.getUserId() == userId)
+    public Item updateItem(Item item) {
+        Item updateItem = items.stream()
+                .filter(i -> i.getId() == item.getId() && i.getUserId() == item.getUserId())
                 .findFirst()
-                .orElseThrow(() -> new UnauthorizedAccessException(userId));
+                .orElseThrow(() -> new UnauthorizedAccessException(item.getUserId()));
 
         if (item.getName() != null && !item.getName().isEmpty()) {
-            item1.setName(item.getName());
+            updateItem.setName(item.getName());
         }
         if (item.getDescription() != null && !item.getDescription().isEmpty()) {
-            item1.setDescription(item.getDescription());
+            updateItem.setDescription(item.getDescription());
         }
         if (item.getAvailable() != null) {
-            item1.setAvailable(item.getAvailable());
+            updateItem.setAvailable(item.getAvailable());
         }
-        return item1;
+        return updateItem;
     }
 
     @Override

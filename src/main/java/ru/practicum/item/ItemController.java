@@ -34,20 +34,20 @@ public class ItemController {
     }
 
     @PostMapping()
-    public ItemDto addItem(@Validated @RequestBody Item item, @RequestHeader(USER_ID_HEADER) long userId) {
-        log.info("Получен запрос POST /items с userId: {} и itemDto: {}", userId, item);
-        ItemDto itemDto = itemService.addItem(item, userId);
-        log.info("Добавлен новый элемент: {}", itemDto);
-        return itemDto;
+    public ItemDto addItem(@Validated @RequestBody ItemDto itemDto, @RequestHeader(USER_ID_HEADER) long userId) {
+        log.info("Получен запрос POST /items с userId: {} и itemDto: {}", userId, itemDto);
+        ItemDto item = itemService.addItem(itemDto, userId);
+        log.info("Добавлен новый элемент: {}", item);
+        return item;
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@PathVariable long itemId, @RequestBody Item item,
+    public ItemDto updateItem(@PathVariable long itemId, @RequestBody ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Получен запрос PATCH /items/{} с userId: {} и itemDto: {}", itemId, userId, item);
-        ItemDto itemDto = itemService.updateItem(itemId, item, userId);
+        log.info("Получен запрос PATCH /items/{} с userId: {} и itemDto: {}", itemId, userId, itemDto);
+        ItemDto item = itemService.updateItem(itemId, itemDto, userId);
         log.info("Обновлен элемент: {}", itemDto);
-        return itemDto;
+        return item;
     }
 
     @DeleteMapping("/{userId}/{itemId}")

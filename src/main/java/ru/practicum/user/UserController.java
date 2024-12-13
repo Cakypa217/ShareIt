@@ -33,17 +33,17 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto saveNewUser(@Valid @RequestBody User user) {
-        log.info("Получен запрос POST /users с пользователем: {}", user);
-        UserDto newUser = userService.addUser(user);
+    public UserDto saveNewUser(@Valid @RequestBody UserDto userDto) {
+        log.info("Получен запрос POST /users с пользователем: {}", userDto);
+        UserDto newUser = userService.addUser(userDto);
         log.info("Добавлен новый пользователь: {}", newUser);
         return newUser;
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@Valid @PathVariable Long userId, @RequestBody User user) {
-        log.info("Получен запрос PATCH /users/{} с пользователем: {}", userId, user);
-        UserDto newUser = userService.updateUser(userId, user);
+    public UserDto updateUser(@Valid @PathVariable Long userId, @RequestBody UserDto userDto) {
+        log.info("Получен запрос PATCH /users/{} с пользователем: {}", userId, userDto);
+        UserDto newUser = userService.updateUser(userId, userDto);
         log.info("Обновлен пользователь: {}", newUser);
         return newUser;
     }

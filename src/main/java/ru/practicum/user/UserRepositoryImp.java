@@ -22,12 +22,12 @@ public class UserRepositoryImp implements UserRepository {
     }
 
     @Override
-    public UserDto getUser(Long userId) {
+    public User getUser(Long userId) {
         User user = users.get(userId);
         if (user == null) {
             throw new UserNotFoundException(userId);
         }
-        return UserMapper.toUserDto(user);
+        return user;
     }
 
     @Override
@@ -43,7 +43,8 @@ public class UserRepositoryImp implements UserRepository {
     }
 
     @Override
-    public User updateUser(Long userId, User user) {
+    public User updateUser(User user) {
+        final Long userId = user.getId();
         User updateUser = users.get(userId);
         if (updateUser == null) {
             throw new UserNotFoundException(userId);

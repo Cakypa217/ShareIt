@@ -26,19 +26,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(Long userId) {
-        UserDto user = repositoryImp.getUser(userId);
-        return user;
+        User user = repositoryImp.getUser(userId);
+        return UserMapper.toUserDto(user);
     }
 
     @Override
-    public UserDto addUser(User user) {
+    public UserDto addUser(UserDto userDto) {
+        User user = UserMapper.toUser(userDto);
         User newUser = repositoryImp.save(user);
         return UserMapper.toUserDto(newUser);
     }
 
     @Override
-    public UserDto updateUser(Long userId, User user) {
-        User newUser = repositoryImp.updateUser(userId, user);
+    public UserDto updateUser(Long userId, UserDto userDto) {
+        User user = UserMapper.toUser(userDto);
+        user.setId(userId);
+        User newUser = repositoryImp.updateUser(user);
         return UserMapper.toUserDto(newUser);
     }
 

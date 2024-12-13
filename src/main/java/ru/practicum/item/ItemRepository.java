@@ -9,11 +9,11 @@ public interface ItemRepository {
 
     Item getItem(long itemId);
 
-    Item save(Item item, long userId);
+    Item save(Item item);
 
     void deleteItemByUser(long userId, long itemId);
 
-    Item updateItem(long itemId, Item item, long userId);
+    Item updateItem(Item item);
 
     List<Item> searchItems(String text);
 }
