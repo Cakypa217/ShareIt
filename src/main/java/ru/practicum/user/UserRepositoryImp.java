@@ -3,9 +3,7 @@ package ru.practicum.user;
 import org.springframework.stereotype.Repository;
 import ru.practicum.exception.DuplicateException;
 import ru.practicum.exception.UserNotFoundException;
-import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
-import ru.practicum.user.model.UserDto;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
