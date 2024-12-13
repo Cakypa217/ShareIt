@@ -1,5 +1,6 @@
 package ru.practicum.user;
 
+import ru.practicum.user.model.User;
 import ru.practicum.user.model.UserDto;
 
 import java.util.List;
@@ -9,9 +10,9 @@ public interface UserService {
 
     UserDto getUser(Long userId);
 
-    UserDto addUser(UserDto userDto);
+    UserDto addUser(User user);
 
-    UserDto updateUser(Long userId, UserDto userDto);
+    UserDto updateUser(Long userId, User user);
 
     void deleteUser(Long userId);
 }

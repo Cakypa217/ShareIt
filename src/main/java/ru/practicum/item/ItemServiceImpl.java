@@ -3,9 +3,12 @@ package ru.practicum.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.item.mapper.ItemMapper;
+import ru.practicum.item.model.Item;
 import ru.practicum.item.model.ItemDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -15,22 +18,28 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItemsForUser(long userId) {
-        return itemRepository.findByUserId(userId);
+        List<Item> items = itemRepository.findByUserId(userId);
+        return items.stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public ItemDto getItem(long itemId) {
-        return itemRepository.getItem(itemId);
+        Item item = itemRepository.getItem(itemId);
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public ItemDto addItem(ItemDto itemDto, long userId) {
-        return itemRepository.save(itemDto, userId);
+    public ItemDto addItem(Item item, long userId) {
+        Item savedItem = itemRepository.save(item, userId);
+        return ItemMapper.toItemDto(savedItem);
     }
 
     @Override
-    public ItemDto updateItem(long itemId, ItemDto itemDto, long userId) {
-        return itemRepository.updateItem(itemId, itemDto, userId);
+    public ItemDto updateItem(long itemId, Item item, long userId) {
+        Item updatedItem = itemRepository.updateItem(itemId, item, userId);
+        return ItemMapper.toItemDto(updatedItem);
     }
 
     @Override
@@ -40,6 +49,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItems(String text) {
-        return itemRepository.searchItems(text);
+        List<Item> items = itemRepository.searchItems(text);
+        return items.stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 }

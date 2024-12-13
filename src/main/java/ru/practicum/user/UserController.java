@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.user.model.User;
 import ru.practicum.user.model.UserDto;
 
 import java.util.List;
@@ -32,24 +33,25 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto saveNewUser(@Valid @RequestBody UserDto userDto) {
-        log.info("Получен запрос POST /users с пользователем: {}", userDto);
-        UserDto user = userService.addUser(userDto);
-        log.info("Добавлен новый пользователь: {}", user);
-        return user;
+    public UserDto saveNewUser(@Valid @RequestBody User user) {
+        log.info("Получен запрос POST /users с пользователем: {}", user);
+        UserDto newUser = userService.addUser(user);
+        log.info("Добавлен новый пользователь: {}", newUser);
+        return newUser;
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@Valid @PathVariable Long userId, @RequestBody UserDto userDto) {
-        log.info("Получен запрос PATCH /users/{} с пользователем: {}", userId, userDto);
-        UserDto user = userService.updateUser(userId, userDto);
-        log.info("Обновлен пользователь: {}", userDto);
-        return user;
+    public UserDto updateUser(@Valid @PathVariable Long userId, @RequestBody User user) {
+        log.info("Получен запрос PATCH /users/{} с пользователем: {}", userId, user);
+        UserDto newUser = userService.updateUser(userId, user);
+        log.info("Обновлен пользователь: {}", newUser);
+        return newUser;
     }
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable Long userId) {
         log.info("Получен запрос DELETE /users/{}", userId);
         userService.deleteUser(userId);
+        log.info("Пользователь с id {} удален", userId);
     }
 }

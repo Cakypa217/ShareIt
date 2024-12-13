@@ -1,19 +1,19 @@
 package ru.practicum.item;
 
-import ru.practicum.item.model.ItemDto;
+import ru.practicum.item.model.Item;
 
 import java.util.List;
 
 public interface ItemRepository {
-    List<ItemDto> findByUserId(long userId);
+    List<Item> findByUserId(long userId);
 
-    ItemDto getItem(long itemId);
+    Item getItem(long itemId);
 
-    ItemDto save(ItemDto itemDto, long userId);
+    Item save(Item item, long userId);
 
     void deleteItemByUser(long userId, long itemId);
 
-    ItemDto updateItem(long itemId, ItemDto itemDto, long userId);
+    Item updateItem(long itemId, Item item, long userId);
 
-    List<ItemDto> searchItems(String text);
+    List<Item> searchItems(String text);
 }

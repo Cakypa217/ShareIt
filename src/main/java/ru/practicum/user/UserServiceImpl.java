@@ -3,9 +3,12 @@ package ru.practicum.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.user.mapper.UserMapper;
+import ru.practicum.user.model.User;
 import ru.practicum.user.model.UserDto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -15,8 +18,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers() {
-        List<UserDto> users = repositoryImp.findAll();
-        return users;
+        List<User> users = repositoryImp.findAll();
+        return users.stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -26,14 +31,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto addUser(UserDto userDto) {
-        UserDto user = repositoryImp.save(userDto);
-        return user;
+    public UserDto addUser(User user) {
+        User newUser = repositoryImp.save(user);
+        return UserMapper.toUserDto(newUser);
     }
 
     @Override
-    public UserDto updateUser(Long userId, UserDto userDto) {
-        return repositoryImp.updateUser(userId, userDto);
+    public UserDto updateUser(Long userId, User user) {
+        User newUser = repositoryImp.updateUser(userId, user);
+        return UserMapper.toUserDto(newUser);
     }
 
     @Override

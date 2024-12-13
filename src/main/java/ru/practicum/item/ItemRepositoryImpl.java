@@ -2,9 +2,7 @@ package ru.practicum.item;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.exception.*;
-import ru.practicum.item.mapper.ItemMapper;
 import ru.practicum.item.model.Item;
-import ru.practicum.item.model.ItemDto;
 import ru.practicum.user.UserServiceImpl;
 
 import java.util.ArrayList;
@@ -22,11 +20,11 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<ItemDto> findByUserId(long userId) {
-        List<ItemDto> userItems = new ArrayList<>();
+    public List<Item> findByUserId(long userId) {
+        List<Item> userItems = new ArrayList<>();
         for (Item item : items) {
             if (item.getUserId() == userId) {
-                userItems.add(ItemMapper.toItemDto(item));
+                userItems.add(item);
             }
         }
         if (userItems.isEmpty()) {
@@ -36,44 +34,44 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public ItemDto getItem(long itemId) {
+    public Item getItem(long itemId) {
         Item item = items.stream()
                 .filter(i -> i.getId() == itemId)
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException("Элемент с id " + itemId + " не найден."));
-        return ItemMapper.toItemDto(item);
+        return item;
     }
 
     @Override
-    public ItemDto save(ItemDto itemDto, long userId) {
+    public Item save(Item item, long userId) {
         if (userServiceImp.getUser(userId) == null) {
             throw new UserNotFoundException(userId);
         }
-        Item item = ItemMapper.toItem(itemDto);
+        Item itemm = item;
         item.setId(idGenerator.incrementAndGet());
         item.setUserId(userId);
-        item.setAvailable(itemDto.getAvailable());
+        item.setAvailable(item.getAvailable());
         items.add(item);
-        return ItemMapper.toItemDto(item);
+        return itemm;
     }
 
     @Override
-    public ItemDto updateItem(long itemId, ItemDto itemDto, long userId) {
-        Item item = items.stream()
+    public Item updateItem(long itemId, Item item, long userId) {
+        Item item1 = items.stream()
                 .filter(i -> i.getId() == itemId && i.getUserId() == userId)
                 .findFirst()
                 .orElseThrow(() -> new UnauthorizedAccessException(userId));
 
-        if (itemDto.getName() != null && !itemDto.getName().isEmpty()) {
-            item.setName(itemDto.getName());
+        if (item.getName() != null && !item.getName().isEmpty()) {
+            item1.setName(item.getName());
         }
-        if (itemDto.getDescription() != null && !itemDto.getDescription().isEmpty()) {
-            item.setDescription(itemDto.getDescription());
+        if (item.getDescription() != null && !item.getDescription().isEmpty()) {
+            item1.setDescription(item.getDescription());
         }
-        if (itemDto.getAvailable() != null) {
-            item.setAvailable(itemDto.getAvailable());
+        if (item.getAvailable() != null) {
+            item1.setAvailable(item.getAvailable());
         }
-        return ItemMapper.toItemDto(item);
+        return item1;
     }
 
     @Override
@@ -85,16 +83,16 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<ItemDto> searchItems(String text) {
+    public List<Item> searchItems(String text) {
         if (text == null || text.isEmpty()) {
             return new ArrayList<>();
         }
-        List<ItemDto> searchResults = new ArrayList<>();
+        List<Item> searchResults = new ArrayList<>();
         for (Item item : items) {
             if ((item.getName().toUpperCase().contains(text.toUpperCase()) ||
                     item.getDescription().toUpperCase().contains(text.toUpperCase())) &&
                     Boolean.TRUE.equals(item.getAvailable())) {
-                searchResults.add(ItemMapper.toItemDto(item));
+                searchResults.add(item);
             }
         }
         return searchResults;
