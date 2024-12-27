@@ -1,17 +1,7 @@
 package ru.practicum.user;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.user.model.User;
 
-import java.util.List;
-
-public interface UserRepository {
-    List<User> findAll();
-
-    User getUser(Long userId);
-
-    User save(User user);
-
-    User updateUser(User user);
-
-    void deleteUser(Long userId);
+public interface UserRepository extends JpaRepository<User, Long> {
 }

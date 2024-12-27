@@ -8,6 +8,7 @@ import lombok.Data;
 public class UserDto {
     private Long id;
     private String name;
+
     @NotBlank(message = "Email не может быть пустым")
     @Email(message = "Некорректный формат email")
     private String email;

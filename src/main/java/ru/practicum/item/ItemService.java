@@ -1,5 +1,6 @@
 package ru.practicum.item;
 
+import ru.practicum.item.model.CommentDto;
 import ru.practicum.item.model.ItemDto;
 
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.List;
 public interface ItemService {
     List<ItemDto> getItemsForUser(long userId);
 
-    ItemDto getItem(long itemId);
+    ItemDto getItem(long itemId, long userId);
 
     ItemDto addItem(ItemDto itemDto, long userId);
 
@@ -16,4 +17,6 @@ public interface ItemService {
     void deleteItemByUser(long userId, long itemId);
 
     List<ItemDto> searchItems(String text);
+
+    CommentDto addComment(long itemId, CommentDto commentDto, long userId);
 }

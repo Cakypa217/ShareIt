@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.item.model.CommentDto;
 import ru.practicum.item.model.ItemDto;
 
 import java.util.List;
@@ -25,9 +26,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable long itemId) {
+    public ItemDto getItem(@PathVariable long itemId, @RequestHeader(USER_ID_HEADER) long userId) {
         log.info("Получен запрос GET /items/{}", itemId);
-        ItemDto item = itemService.getItem(itemId);
+        ItemDto item = itemService.getItem(itemId, userId);
         log.info("Найден элемент: {}", item);
         return item;
     }
@@ -62,5 +63,12 @@ public class ItemController {
         List<ItemDto> items = itemService.searchItems(text);
         log.info("Найдены элементы: {}", items);
         return items;
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@PathVariable long itemId, @Validated @RequestBody CommentDto commentDto,
+                                 @RequestHeader(USER_ID_HEADER) long userId) {
+        log.info("Получен запрос POST /items/{}/comment с userId: {} и commentDto: {}", itemId, userId, commentDto);
+        return itemService.addComment(itemId, commentDto, userId);
     }
 }
