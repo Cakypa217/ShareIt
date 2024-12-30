@@ -1,11 +1,15 @@
 package ru.practicum.item.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.request.model.ItemRequest;
 import ru.practicum.user.model.User;
 
-@Data
+import java.util.List;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "items")
 public class Item {
@@ -29,4 +33,20 @@ public class Item {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     private ItemRequest request;
+
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Item)) return false;
+        Item item = (Item) o;
+        return id == item.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(id);
+    }
 }

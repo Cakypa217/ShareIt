@@ -1,6 +1,7 @@
 package ru.practicum.item;
 
 import ru.practicum.item.model.CommentDto;
+import ru.practicum.item.model.Item;
 import ru.practicum.item.model.ItemDto;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface ItemService {
     List<ItemDto> searchItems(String text);
 
     CommentDto addComment(long itemId, CommentDto commentDto, long userId);
+
+    Item findItemById(long itemId);
 }

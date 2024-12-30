@@ -10,9 +10,11 @@ import java.util.List;
 
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    List<Item> findByUserId(long userId);
+    @Query("SELECT i FROM Item i LEFT JOIN FETCH i.comments WHERE i.user.id = :userId")
+    List<Item> findByUserId(@Param("userId") long userId);
 
-    @Query(value = "SELECT * FROM items i WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :text, '%')) OR LOWER(i.description) LIKE LOWER(CONCAT('%', :text, '%'))", nativeQuery = true)
+    @Query(value = "SELECT * FROM items i WHERE LOWER(i.name) LIKE LOWER(CONCAT('%', :text, '%')) " +
+            "OR LOWER(i.description) LIKE LOWER(CONCAT('%', :text, '%'))", nativeQuery = true)
     List<Item> searchItems(@Param("text") String text);
 
     @Modifying

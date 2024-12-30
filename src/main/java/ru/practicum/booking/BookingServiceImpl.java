@@ -1,36 +1,34 @@
 package ru.practicum.booking;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.booking.mapper.BookingMapper;
 import ru.practicum.booking.model.Booking;
 import ru.practicum.booking.model.BookingDto;
 import ru.practicum.booking.model.State;
 import ru.practicum.booking.model.Status;
-import ru.practicum.exception.ItemNotFoundException;
-import ru.practicum.exception.UserNotFoundException;
-import ru.practicum.item.ItemRepository;
+import ru.practicum.item.ItemService;
 import ru.practicum.item.model.Item;
-import ru.practicum.user.UserRepository;
+import ru.practicum.user.UserService;
 import ru.practicum.user.model.User;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
-    private final UserRepository userRepository;
-    private final ItemRepository itemRepository;
+    private final UserService userService;
+    private final ItemService itemService;
 
     @Override
     public BookingDto addBooking(long userId, BookingDto bookingDto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        Item item = itemRepository.findById(bookingDto.getItemId())
-                .orElseThrow(() -> new ItemNotFoundException(bookingDto.getItemId()));
+        log.info("Добавление нового бронирования для userId: {} с данными: {}", userId, bookingDto);
+        User user = userService.findUserById(userId);
+        Item item = itemService.findItemById(bookingDto.getItemId());
         if (!item.getAvailable()) {
             throw new IllegalArgumentException("Вещь недоступна для бронирования");
         }
@@ -39,12 +37,14 @@ public class BookingServiceImpl implements BookingService {
         booking.setBooker(user);
         booking.setItem(item);
         booking = bookingRepository.save(booking);
+        log.info("Бронирование добавлено: {}", booking);
         return BookingMapper.toBookingDto(booking);
     }
 
-
     @Override
     public BookingDto updateBookingStatus(long bookingId, boolean approved, long userId) {
+        log.info("Обновление статуса бронирования с bookingId: {} для userId: {} на approved: {}",
+                bookingId, userId, approved);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Бронирование не найдено"));
 
@@ -58,32 +58,37 @@ public class BookingServiceImpl implements BookingService {
 
         booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
         booking = bookingRepository.save(booking);
+        log.info("Статус бронирования обновлен: {}", booking);
         return BookingMapper.toBookingDto(booking);
     }
 
     @Override
     public BookingDto getBooking(long bookingId, long userId) {
+        log.info("Получение бронирования с bookingId: {} для userId: {}", bookingId, userId);
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new IllegalArgumentException("Бронирование не найдено"));
+        log.info("Бронирование получено: {}", booking);
         return BookingMapper.toBookingDto(booking);
     }
 
     @Override
     public List<BookingDto> getBookingsForUser(long userId, State state) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-
+        log.info("Получение бронирований для пользователя с userId: {} и состоянием: {}", userId, state);
+        userService.findUserById(userId);
         List<Booking> bookings = bookingRepository.findByBookerIdOrderByStartDesc(userId);
+        log.info("Найдено {} бронирований для пользователя с userId: {}", bookings.size(), userId);
         return bookings.stream()
                 .map(BookingMapper::toBookingDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<BookingDto> getBookingsForOwner(long userId, Status status) {
+        log.info("Получение бронирований для владельца с userId: {} и статусом: {}", userId, status);
         List<Booking> bookings = bookingRepository.findAll();
+        log.info("Найдено {} бронирований для владельца с userId: {}", bookings.size(), userId);
         return bookings.stream()
                 .map(BookingMapper::toBookingDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

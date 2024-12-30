@@ -9,7 +9,6 @@ import ru.practicum.user.model.User;
 import ru.practicum.user.model.UserDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,30 +18,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsers() {
+        log.info("Получение всех пользователей");
         List<User> users = userRepository.findAll();
-        return users.stream()
+        List<UserDto> userDto = users.stream()
                 .map(UserMapper::toUserDto)
-                .collect(Collectors.toList());
+                .toList();
+        log.info("Найдено пользователей: {}", userDto.size());
+        return userDto;
     }
 
     @Override
     public UserDto getUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
-        return UserMapper.toUserDto(user);
+        log.info("Получение пользователя с id: {}", userId);
+        User user = findUserById(userId);
+        UserDto userDto = UserMapper.toUserDto(user);
+        log.info("Найден пользователь: {}", userDto);
+        return userDto;
     }
 
     @Override
     public UserDto addUser(UserDto userDto) {
+        log.info("Добавление нового пользователя: {}", userDto);
         User user = UserMapper.toUser(userDto);
         User newUser = userRepository.save(user);
-        return UserMapper.toUserDto(newUser);
+        UserDto newUserDto = UserMapper.toUserDto(newUser);
+        log.info("Пользователь добавлен: {}", newUserDto);
+        return newUserDto;
     }
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(userId));
+        log.info("Обновление пользователя с id: {}", userId);
+        User existingUser = findUserById(userId);
         if (userDto.getName() != null) {
             existingUser.setName(userDto.getName());
         }
@@ -50,11 +57,21 @@ public class UserServiceImpl implements UserService {
             existingUser.setEmail(userDto.getEmail());
         }
         User updatedUser = userRepository.save(existingUser);
-        return UserMapper.toUserDto(updatedUser);
+        UserDto updatedUserDto = UserMapper.toUserDto(updatedUser);
+        log.info("Пользователь обновлен: {}", updatedUserDto);
+        return updatedUserDto;
     }
 
     @Override
     public void deleteUser(Long userId) {
+        log.info("Удаление пользователя с id: {}", userId);
         userRepository.deleteById(userId);
+        log.info("Пользователь с id {} удален", userId);
+    }
+
+    @Override
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(userId));
     }
 }

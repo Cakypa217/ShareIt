@@ -19,56 +19,38 @@ public class ItemController {
 
     @GetMapping()
     public List<ItemDto> getItemsForUser(@RequestHeader(USER_ID_HEADER) long userId) {
-        log.info("Получен запрос GET /items/{}", userId);
-        List<ItemDto> items = itemService.getItemsForUser(userId);
-        log.info("Найдены элементы: {}", items);
-        return items;
+        return itemService.getItemsForUser(userId);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItem(@PathVariable long itemId, @RequestHeader(USER_ID_HEADER) long userId) {
-        log.info("Получен запрос GET /items/{}", itemId);
-        ItemDto item = itemService.getItem(itemId, userId);
-        log.info("Найден элемент: {}", item);
-        return item;
+        return itemService.getItem(itemId, userId);
     }
 
     @PostMapping()
     public ItemDto addItem(@Validated @RequestBody ItemDto itemDto, @RequestHeader(USER_ID_HEADER) long userId) {
-        log.info("Получен запрос POST /items с userId: {} и itemDto: {}", userId, itemDto);
-        ItemDto item = itemService.addItem(itemDto, userId);
-        log.info("Добавлен новый элемент: {}", item);
-        return item;
+        return itemService.addItem(itemDto, userId);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@PathVariable long itemId, @RequestBody ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info("Получен запрос PATCH /items/{} с userId: {} и itemDto: {}", itemId, userId, itemDto);
-        ItemDto item = itemService.updateItem(itemId, itemDto, userId);
-        log.info("Обновлен элемент: {}", itemDto);
-        return item;
+        return itemService.updateItem(itemId, itemDto, userId);
     }
 
     @DeleteMapping("/{userId}/{itemId}")
     public void deleteItemByUserId(@PathVariable long userId, @PathVariable long itemId) {
-        log.info("Получен запрос DELETE /items/{}/{}", userId, itemId);
         itemService.deleteItemByUser(userId, itemId);
-        log.info("Элемент с id {} успешно удален пользователем с id {}", itemId, userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text) {
-        log.info("Получен запрос GET /items/search?text={}", text);
-        List<ItemDto> items = itemService.searchItems(text);
-        log.info("Найдены элементы: {}", items);
-        return items;
+        return itemService.searchItems(text);
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentDto addComment(@PathVariable long itemId, @Validated @RequestBody CommentDto commentDto,
                                  @RequestHeader(USER_ID_HEADER) long userId) {
-        log.info("Получен запрос POST /items/{}/comment с userId: {} и commentDto: {}", itemId, userId, commentDto);
         return itemService.addComment(itemId, commentDto, userId);
     }
 }
