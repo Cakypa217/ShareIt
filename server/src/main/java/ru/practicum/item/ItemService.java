@@ -1,0 +1,25 @@
+package ru.practicum.item;
+
+import ru.practicum.item.model.CommentDto;
+import ru.practicum.item.model.Item;
+import ru.practicum.item.model.ItemDto;
+
+import java.util.List;
+
+public interface ItemService {
+    List<ItemDto> getItemsForUser(long userId);
+
+    ItemDto getItem(long itemId, long userId);
+
+    ItemDto addItem(ItemDto itemDto, long userId, Long requestId);
+
+    ItemDto updateItem(long itemId, ItemDto itemDto, long userId);
+
+    void deleteItemByUser(long userId, long itemId);
+
+    List<ItemDto> searchItems(String text);
+
+    CommentDto addComment(long itemId, CommentDto commentDto, long userId);
+
+    Item findItemById(long itemId);
+}
